@@ -13,10 +13,10 @@ app.get("/", (req, res) => {
 });
 
 app.get("/contact", (req, res) => {
-  res.render("contact.ejs");
+  res.render("register.ejs");
 });
 app.get("/start", (req, res) => {
-  res.render("start.ejs");
+  res.render("auth.ejs");
 });
 
 app.listen(port, () => {
