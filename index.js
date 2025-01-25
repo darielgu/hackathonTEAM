@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
   res.render("index.ejs");
 });
 
-app.get("/contact", (req, res) => {
+app.get("/register", (req, res) => {
   res.render("register.ejs");
 });
 app.get("/start", (req, res) => {
