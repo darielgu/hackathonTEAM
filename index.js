@@ -18,7 +18,7 @@ app.use(express.static("views/partials"));
 app.set("view engine", "ejs");
 //connecting to the mongodb Database
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect("mongodb://localhost:27017/mydatabase", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
