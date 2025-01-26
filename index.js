@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import User from "./models/User.js";
+import Client from "./models/Client.js";
 
 dotenv.config();
 const app = express();
@@ -84,7 +85,14 @@ app.post("/dashboard", (req, res) => {
   const user = users[userId];
 
   if (user) {
-    res.render("dashboard", { user, error: null });
+    // Ensure functions are called before rendering
+    const processedUser = {
+      ...user,
+      accountBalance: user.accountBalance(),
+      lastTransaction: user.lastTransaction(),
+    };
+
+    res.render("dashboard", { user: processedUser, error: null });
   } else {
     res.render("dashboard", {
       user: null,
@@ -109,15 +117,23 @@ const users = {
   12345: {
     name: "John Doe",
     email: "john.doe@example.com",
-    accountBalance: 150000,
-    portfolio: "Stocks, Bonds, ETFs",
-    lastTransaction: "2025-01-15 | Stock Purchase | $5,000",
     transactions: [
       { date: "2025-01-10", description: "Groceries", amount: 150 },
       { date: "2025-01-12", description: "Rent", amount: 2000 },
       { date: "2025-01-15", description: "Investment", amount: 5000 },
       { date: "2025-01-20", description: "Utilities", amount: 100 },
     ],
+    accountBalance: function () {
+      return this.transactions.reduce(
+        (acc, transaction) => acc + transaction.amount,
+        0
+      );
+    },
+    portfolio: "Stocks, Bonds, ETFs",
+    lastTransaction: function () {
+      const lastTrans = this.transactions[this.transactions.length - 1];
+      return `${lastTrans.date} | ${lastTrans.description} | $${lastTrans.amount}`;
+    },
   },
   67890: {
     name: "Jane Smith",

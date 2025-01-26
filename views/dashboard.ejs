@@ -28,7 +28,8 @@
 
 
   <!-- User Info Display -->
-  <% if (user) { %>
+  <!-- User Info Display -->
+<% if (user) { %>
   <div class="mt-5">
     <h3>User Details</h3>
     <table class="table table-bordered mt-3">
@@ -43,10 +44,6 @@
       <tr>
         <th>Account Balance</th>
         <td>$<%= user.accountBalance %></td>
-      </tr>
-      <tr>
-        <th>Investment Portfolio</th>
-        <td><%= user.portfolio %></td>
       </tr>
       <tr>
         <th>Last Transaction</th>
@@ -73,6 +70,7 @@
         <% }) %>
       </tbody>
     </table>
+  
     <!-- Charts Section -->
     <div class="mt-5">
       <h3 class="text-center">Financial Overview</h3>

@@ -13,7 +13,7 @@
   >
     <form action="/add-client" method="POST" enctype="multipart/form-data">
       <div class="mb-3">
-        <label for="userId" class="form-label fw-bold">User ID</label>
+        <label for="userId" class="form-label fw-bold">Client User ID</label>
         <input
           type="text"
           id="userId"
@@ -31,6 +31,17 @@
           name="name"
           class="form-control form-control-lg rounded-pill text-center"
           placeholder="Enter client name"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="clientEmail" class="form-label fw-bold">Client Email</label>
+        <input
+          type="text"
+          id="clientEmail"
+          name="EMAIL"
+          class="form-control form-control-lg rounded-pill text-center"
+          placeholder="Enter client Email"
           required
         />
       </div>
