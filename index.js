@@ -18,6 +18,16 @@ app.get("/register", (req, res) => {
 app.get("/start", (req, res) => {
   res.render("auth.ejs");
 });
+app.post("/register", (req, res) => {
+  const { email, password } = req.body;
+  console.log(`Username: ${email}, Password: ${password}`);
+  res.redirect("/start");
+});
+app.post("/auth", (req, res) => {
+  {
+    res.render("start.ejs");
+  }
+});
 
 app.listen(port, () => {
   console.log("Listening on port 3000");
