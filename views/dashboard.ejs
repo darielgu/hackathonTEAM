@@ -1,0 +1,160 @@
+<%- include("partials/header.ejs") %>
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">LPL Financial Advisor Dashboard</h2>
+
+  <!-- Search Form -->
+  <div class="card p-4 shadow-lg">
+    <form action="/dashboard" method="POST" class="text-center">
+      <div class="mb-3">
+        <label for="userId" class="form-label fw-bold">Enter User ID</label>
+        <input
+          type="text"
+          id="userId"
+          name="userId"
+          class="form-control"
+          placeholder="Enter User ID..."
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Search User</button>
+    </form>
+  </div>
+
+  <!-- User Info Display -->
+  <% if (user) { %>
+  <div class="mt-5">
+    <h3>User Details</h3>
+    <table class="table table-bordered mt-3">
+      <tr>
+        <th>Name</th>
+        <td><%= user.name %></td>
+      </tr>
+      <tr>
+        <th>Email</th>
+        <td><%= user.email %></td>
+      </tr>
+      <tr>
+        <th>Account Balance</th>
+        <td>$<%= user.accountBalance %></td>
+      </tr>
+      <tr>
+        <th>Investment Portfolio</th>
+        <td><%= user.portfolio %></td>
+      </tr>
+      <tr>
+        <th>Last Transaction</th>
+        <td><%= user.lastTransaction %></td>
+      </tr>
+    </table>
+
+    <h4 class="mt-4">Recent Transactions</h4>
+    <table class="table table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% user.transactions.forEach(transaction => { %>
+        <tr>
+          <td><%= transaction.date %></td>
+          <td><%= transaction.description %></td>
+          <td>$<%= transaction.amount %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <!-- Charts Section -->
+    <div class="mt-5">
+      <h3 class="text-center">Financial Overview</h3>
+
+      <div class="row">
+        <div class="col-md-6">
+          <canvas id="expenseChart"></canvas>
+        </div>
+        <div class="col-md-6">
+          <canvas id="portfolioChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } else { %>
+  <div class="alert alert-danger mt-4">User Not Found</div>
+  <% } %>
+</div>
+
+<%- include("partials/footer.ejs") %>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const expenseCtx = document.getElementById("expenseChart").getContext("2d");
+  const portfolioCtx = document
+    .getElementById("portfolioChart")
+    .getContext("2d");
+
+  const expenseChart = new Chart(expenseCtx, {
+    type: "bar",
+    data: {
+      labels: ["Rent", "Utilities", "Groceries", "Entertainment", "Other"],
+      datasets: [
+        {
+          label: "Monthly Expenses",
+          data: [1200, 300, 400, 150, 200],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+          ],
+          borderColor: [
+            "rgba(255,99,132,1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
+            "rgba(153, 102, 255, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  const portfolioChart = new Chart(portfolioCtx, {
+    type: "pie",
+    data: {
+      labels: ["Stocks", "Bonds", "Real Estate", "Cash"],
+      datasets: [
+        {
+          label: "Investment Portfolio",
+          data: [40, 30, 20, 10],
+          backgroundColor: [
+            "rgba(255,99,132,0.2)",
+            "rgba(54,162,235,0.2)",
+            "rgba(255,206,86,0.2)",
+            "rgba(75,192,192,0.2)",
+          ],
+          borderColor: [
+            "rgba(25599-132-1)",
+            "rgba(54-162-235-1)",
+            "rgba(255-206-86-1)",
+            "rgba(75-192-192-1)",
+          ],
+        },
+      ],
+    },
+  });
+</script>
