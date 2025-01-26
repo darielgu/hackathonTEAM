@@ -2,8 +2,13 @@ import mongoose from "mongoose";
 
 const transactionSchema = new mongoose.Schema({
   date: String,
+  clearingDate: String,
   description: String,
+  merchant: String,
+  category: String,
+  type: String,
   amount: Number,
+  purchasedBy: String,
 });
 
 const clientSchema = new mongoose.Schema({

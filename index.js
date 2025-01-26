@@ -4,6 +4,9 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import User from "./models/User.js";
 import Client from "./models/Client.js";
+import multer from "multer";
+import csvParser from "csv-parser";
+import fs from "fs";
 
 dotenv.config();
 const app = express();
@@ -21,6 +24,10 @@ mongoose
   })
   .then(() => console.log("Connected to MongoDB successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
+
+const upload = multer({ dest: "uploads/" });
+
+//ROUTES
 
 app.get("/", (req, res) => {
   res.render("index.ejs");
@@ -76,8 +83,31 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/dashboard", (req, res) => {
-  res.render("dashboard", { user: null, error: null });
+app.get("/dashboard", async (req, res) => {
+  const { userId } = req.query; // Get userId from query parameters
+
+  if (!userId) {
+    return res.render("dashboard", {
+      user: null,
+      error: "Please provide a valid User ID.",
+    });
+  }
+
+  try {
+    const client = await Client.findOne({ userId });
+
+    if (!client) {
+      return res.render("dashboard", { user: null, error: "User not found." });
+    }
+
+    res.render("dashboard", { user: client, error: null });
+  } catch (err) {
+    console.error("Error retrieving client:", err);
+    res.render("dashboard", {
+      user: null,
+      error: "Error retrieving user data.",
+    });
+  }
 });
 
 app.post("/dashboard", (req, res) => {
@@ -100,8 +130,49 @@ app.post("/dashboard", (req, res) => {
     });
   }
 });
+//Route for the client page
 app.get("/client", (req, res) => {
   res.render("client.ejs");
+});
+//NEW ROUTE FOR MAKING A NEW CLIENT
+app.post("/add-client", upload.single("transactionFile"), async (req, res) => {
+  const { userId, name, EMAIL } = req.body;
+
+  const transactions = [];
+
+  fs.createReadStream(req.file.path)
+    .pipe(csvParser())
+    .on("data", (row) => {
+      transactions.push({
+        date: row["Transaction Date"],
+        clearingDate: row["Clearing Date"],
+        description: row["Description"],
+        merchant: row["Merchant"],
+        category: row["Category"],
+        type: row["Type"],
+        amount: parseFloat(row["Amount (USD)"]),
+        purchasedBy: row["Purchased By"],
+      });
+    })
+    .on("end", async () => {
+      try {
+        const newClient = new Client({
+          userId,
+          name,
+          email: EMAIL,
+          transactions,
+        });
+
+        await newClient.save();
+        fs.unlinkSync(req.file.path);
+
+        res.redirect("/dashboard");
+        console.log("Client added successfully");
+      } catch (error) {
+        console.error("Error saving client:", error);
+        res.status(500).send("Error adding client.");
+      }
+    });
 });
 
 app.get("/report", (req, res) => {
