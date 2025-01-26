@@ -5,3 +5,4 @@ To get it started:
 2. Head to LocalHost 3000
 3. Register an account then login to the dashboard portal!
 4. To get started create a user with the csv in the github (Its some of my Credit Card Transactions)
+5. Then search for a user with the user ID you created
