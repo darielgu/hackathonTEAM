@@ -18,7 +18,7 @@ app.use(express.static("views/partials"));
 app.set("view engine", "ejs");
 //connecting to the mongodb Database
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect("mongodb://localhost:27017/mydatabase", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -176,8 +176,28 @@ app.post("/add-client", upload.single("transactionFile"), async (req, res) => {
 });
 
 app.get("/report", (req, res) => {
-  res.render("report.ejs");
+  res.render("report.ejs", {user:null, error:null}); 
 });
+
+app.post("/report", async (req, res) => {
+  const userId = req.body.userId;
+  console.log('Received userId:', userId);
+
+  try {
+    // Query for user by the actual userId value (assuming it's a numeric or string field)
+    const user = await Client.findOne({ userId: userId }); // Assuming `userId` is the field name
+    if (user) {
+      res.render("report", { user, error: null }); // No error if user is found
+    } else {
+      res.render("report", { user: null, error: "User not found. Please try again." });
+    }
+  } catch (err) {
+    console.error(err);
+    res.render("report", { user: null, error: "An error occurred. Please try again." });
+  }
+});
+
+
 
 app.listen(port, () => {
   console.log("Listening on port 3000");

@@ -12,13 +12,13 @@
     <div
       class="card shadow-lg p-4 rounded-4"
       style="
-        max-width: 500px;
+        max-width: 900px;
         width: 100%;
         background: linear-gradient(135deg, #6e85b7, #b2c8df);
         color: white;
       "
     >
-      <form id="reportForm">
+      <form id="reportForm" method = "POST" action = "/report">
         <div class="mb-3">
           <label for="userId" class="form-label fw-bold">Enter User ID:</label>
           <input
@@ -37,7 +37,29 @@
           Generate Report
         </button>
       </form>
-      <div id="reportResult" class="mt-4 text-center"></div>
+
+      <!-- User Details and Transactions -->
+      <% if (user) { %>
+        <div id="reportResult" class="mt-4 text-white">
+          <h2 class="text-center mb-3">User Details</h2>
+          <p style = "color: black"><strong>Name:</strong> <%= user.name || "N/A" %></p>
+          <p style = "color: black"><strong>Email:</strong> <%= user.email || "N/A" %></p>
+
+          <!-- Add your image here -->
+          <div class="text-center mt-4">
+            <img src="/prediction_graph.png" alt="User Image" class="img-fluid" style="max-width: 800px; height: auto;" />
+          </div>
+
+          <div class ="text-center mt-4">
+            <h3 class="mt-4 text-center">Description and Analysis</h3>
+            <p style = "color: black"> The forecast graph illustrates the predicted client costs over a specific period, based on historical spending trends. 
+              It shows the expected trajectory of client transactions, with a shaded region indicating the range of uncertainty around the predictions, helping visualize potential variations. 
+              Overall, the graph seems to be slightly increasing, indicating that client may potentially incur more costs in the near future with drop offs.</p>
+          </div>
+
+        </div>
+      <% } %>
+
     </div>
   </div>
 </div>
